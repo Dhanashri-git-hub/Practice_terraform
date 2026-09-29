@@ -37,9 +37,4 @@ Clean up when done, to avoid charges:
 terraform destroy
 ```
 
-## What I learned / what broke
-- [One thing that confused you, e.g. why the plan showed 4 resources]
-- Committed the `.terraform/` folder by accident and GitHub rejected the push
-  (provider binary over 100 MB). Fixed by adding a `.gitignore` and
-  re-initialising the repo.
 
