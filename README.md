@@ -1,3 +1,5 @@
+<img width="1470" height="956" alt="Screenshot 2026-09-26 at 5 28 42 PM" src="https://github.com/user-attachments/assets/f631085b-83cc-4e30-94a4-2f855807c905" />
+<img width="1470" height="956" alt="Screenshot 2026-09-25 at 1 21 48 AM" src="https://github.com/user-attachments/assets/9e02909e-ad6e-4f1e-a6f1-734b99e977a6" />
 # AWS Private Server (Terraform)
 
 **Goal:** A server that isn't directly reachable from the internet, but can
