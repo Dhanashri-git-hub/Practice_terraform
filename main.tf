@@ -1,4 +1,4 @@
-# Find the latest Amazon Linux 2023 image instead of hardcoding an AMI ID
+# Find the latest AMI 
 data "aws_ami" "amazon_linux" {
   most_recent = true
   owners      = ["amazon"]
@@ -34,11 +34,26 @@ resource "aws_s3_bucket_public_access_block" "logs" {
 }
 
 resource "aws_instance" "server" {
-  ami           = data.aws_ami.amazon_linux.id
-  instance_type = var.instance_type
+  ami                  = data.aws_ami.amazon_linux.id
+  instance_type        = var.instance_type
+  iam_instance_profile = aws_iam_instance_profile.server.name
+
+  # Require IMDSv2 (the more secure way for the instance to fetch its credentials)
+  metadata_options {
+    http_tokens = "required"
+  }
+
+  # Runs once on first boot: proves the role works by writing a file to S3
+  user_data = <<-EOF
+    #!/bin/bash
+    echo "Hello from $(hostname) at $(date)" > /tmp/hello.txt
+    aws s3 cp /tmp/hello.txt s3://${aws_s3_bucket.logs.bucket}/logs/hello.txt --region ${var.aws_region}
+  EOF
+
+  user_data_replace_on_change = true
 
   tags = {
-    Name    = "${var.Practice_Terraform}-server"
+    Name    = "${var.project_name}-server"
     Project = var.project_name
   }
 }
