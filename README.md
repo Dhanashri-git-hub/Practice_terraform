@@ -94,3 +94,29 @@ terraform destroy
   group, so it is not private yet (Stages 3 and 4)
 - Terraform state is stored locally; remote state in S3 is a future improvement
 
+## Stage 3: Custom VPC + Private Subnet
+
+### What this stage does
+Replaces the default VPC with a custom VPC and places the EC2 instance in a 
+private subnet with no route to the internet — the instance is unreachable 
+from outside AWS, but can still write logs to S3 via the IAM role from Stage 2.
+
+### Resources created
+| Resource | ID |
+|---|---|
+| VPC | `vpc-00da010662add82e7` |
+| Private subnet | `subnet-047d518b7353c6165` |
+| EC2 instance | `i-0498f9e1b4bea6cdb` |
+| Private IP | `10.0.1.5` |
+| IAM role | `aws-private-server-server-role` |
+| S3 bucket (logs) | `aws-private-server-logs-76de6d51` |
+
+### Verification
+- Confirmed the instance has **no public IP** (`PublicIpAddress: None` via `aws ec2 describe-instances`)
+- Confirmed SSH from a local machine to `10.0.1.5` times out — subnet has no route to/from the internet
+- IAM role from Stage 2 still allows the instance to write logs to S3 despite no internet access
+
+### What's intentionally missing
+No NAT gateway yet, so the instance can't reach the internet for updates. 
+That's Stage 4.
+

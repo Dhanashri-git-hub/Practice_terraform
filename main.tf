@@ -34,9 +34,13 @@ resource "aws_s3_bucket_public_access_block" "logs" {
 }
 
 resource "aws_instance" "server" {
-  ami                  = data.aws_ami.amazon_linux.id
-  instance_type        = var.instance_type
-  iam_instance_profile = aws_iam_instance_profile.server.name
+  ami                         = data.aws_ami.amazon_linux.id
+  instance_type               = var.instance_type
+  iam_instance_profile        = aws_iam_instance_profile.server.name
+  subnet_id                   = aws_subnet.private.id          # new
+  vpc_security_group_ids      = [aws_security_group.server.id] # new
+  associate_public_ip_address = false                          # new
+
 
   # Require IMDSv2 (the more secure way for the instance to fetch its credentials)
   metadata_options {
